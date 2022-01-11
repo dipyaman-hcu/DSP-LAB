@@ -1,2 +1,83 @@
-
 #include<stdio.h>
+
+int top = -1;
+int stacksize;
+
+void push(int *arr)
+{
+	int data;
+
+	if(top == stacksize-1){
+		printf("Stackoverflow \n");
+	}
+	else{
+		printf("Enter the value you want to push onto the stack \n");
+		scanf("%d",&data);
+		
+		top += 1;
+		arr[top] = data;
+	}
+
+}
+
+int pop(int *arr)
+{
+	int data;
+	
+	if(top == -1){
+		printf("Underflow \n");
+	}
+	else{
+		data = arr[top];
+		top -= 1;
+		return data;
+	}
+}
+
+void display(int *arr)
+{
+	int i;
+	
+	if(top == -1){
+		printf("There are no elements present in the stack \n");
+	}
+	else
+	{
+		for(i = 0; i<=top;i++)
+		{
+			printf("%d ",arr[i]);
+		}
+	}
+	printf("\n");
+}
+
+void main()
+{
+	
+	int i,n,choice;
+	
+	printf("Enter the size of the array \n");
+	scanf("%d",&n);
+	stacksize = n;
+	
+	int stack_arr[n];
+	
+	while(choice){
+		
+		printf("Push : press 1, Pop : press 2, Display : press 3, Quit : press 0 \n");
+		scanf("%d",&choice);
+		
+		if(choice == 1){
+			push(stack_arr);
+		}
+		if(choice == 2){
+			pop(stack_arr);
+		}
+		if(choice == 3){
+			display(stack_arr);
+		}
+	}
+	printf("The program has terminated. The final stack is \n");
+	display(stack_arr);
+
+}
