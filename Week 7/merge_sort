@@ -1,1 +1,110 @@
+#include<stdio.h>
+#include<time.h>
+#include<stdlib.h>
 
+void printarray(int a[],int size)
+{
+	int i;
+	for(i = 0; i<size; i++)
+		printf("%d ",a[i]);
+		
+	printf("\n");
+}
+
+void merge(int *Arr, int start, int mid, int end) 
+{
+	
+	int temp[end - start + 1];
+	int i = start, j = mid+1, temp_index = 0;
+	while(i <= mid && j <= end) 
+	{
+		if(Arr[i] <= Arr[j]) 
+		{
+			temp[temp_index] = Arr[i];
+			temp_index += 1;
+			i += 1;
+		}
+		else {
+			temp[temp_index] = Arr[j];
+			temp_index += 1; 
+			j += 1;
+		}
+	}
+	while(i <= mid) 
+	{
+		temp[temp_index] = Arr[i];
+		temp_index += 1;
+		i += 1;
+	}
+	while(j <= end) 
+	{
+		temp[temp_index] = Arr[j];
+		temp_index += 1; 
+		j += 1;
+	}
+	for(i = start; i <= end; i += 1) 
+	{
+		Arr[i] = temp[i - start];
+	}
+}
+
+
+void mergesort(int *Arr, int l, int r) {
+
+	if(l < r) {
+		int mid = (l + r) / 2;
+		mergesort(Arr, l, mid);
+		mergesort(Arr, mid+1, r);
+		merge(Arr, l, mid, r);
+	}
+}
+
+int main()
+{
+	int n;
+	time_t start1,end1,start2,end2,start3,end3;
+	
+	printf("Enter the size of the array\n");
+	scanf("%d",&n);
+	
+	int *arr1 = (int*)malloc(n*sizeof(int));
+	int *arr2 = (int*)malloc(n*sizeof(int));
+	int *arr3 = (int*)malloc(n*sizeof(int));
+	
+	int i,j;
+	for(i = 0; i<n; i++)
+	{
+		arr1[i] = rand()%10;
+		arr2[i] = i;
+	}
+	
+	int k = n/10;
+	
+	for(j = 0; j<n-k;j++)
+		arr3[j] = j;
+	for(i = n-k;i<n;i++)
+		arr3[i] = rand()%10;
+
+	start1 = clock();
+	mergesort(arr1,0,n-1);
+	end1 = clock();
+	printf("Random %0.3lf\n",(double)(end1-start1)/CLOCKS_PER_SEC);
+	
+	start2 = clock();
+	mergesort(arr1,0,n-1);
+	end2= clock();
+	printf("Sorted %0.3lf\n",(double)(end2-start2)/CLOCKS_PER_SEC);
+	
+
+	start3 = clock();
+	mergesort(arr1,0,n-1);
+	end3 = clock();
+	printf("Almost Sorted %0.3lf\n",(double)(end3-start3)/CLOCKS_PER_SEC);
+	
+	/*printarray(arr1,n);
+	printarray(arr2,n);
+	printarray(arr3,n);*/
+	
+return 0;
+
+}
