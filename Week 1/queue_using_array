@@ -1,1 +1,80 @@
+#include<stdio.h>
 
+int top = 0;
+int end = -1;
+int queuesize;
+
+void enqueue(int *arr){
+	int data;
+	if(end == queuesize-1){
+		printf("Overflow \n");
+	}
+	else{
+		printf("Enter the data you want to enqueue \n");
+		scanf("%d",&data);
+		
+		end += 1;
+		arr[end] = data;
+	}
+}
+
+int dequeue(int *arr)
+{
+	int data;
+	if(top > end){
+		printf("underflow \n");
+	}
+	else{
+		data = arr[top];
+		top = top + 1;
+		return data;
+	}
+	
+}
+
+void display(int *arr)
+{
+	int i;
+	if(top > end){
+		printf("The queue is empty \n");
+	}
+	else{
+		for(i = top; i<= end; i++){
+			printf(" %d ",arr[i]);
+		}
+	}
+}
+
+
+
+int main()
+{
+	
+	int i,n,choice;
+	
+	printf("Enter the size of the array \n");
+	scanf("%d",&n);
+	queuesize = n;
+	
+	int queue_arr[n];
+	
+	while(choice){
+		
+		printf("Enqueue : PRESS 1, Dequeue : PRESS 2, Display : PRESS 3, Quit : PRESS 0 \n");
+		scanf("%d",&choice);
+		
+		if(choice == 1){
+			enqueue(queue_arr);
+		}
+		if(choice == 2){
+			dequeue(queue_arr);
+		}
+		if(choice == 3){
+			display(queue_arr);
+			printf("\n");
+		}
+	}
+	printf("The program has terminated. The final queue is \n");
+	display(queue_arr);
+return 0;
+}
