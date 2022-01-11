@@ -1,1 +1,116 @@
+#include<stdio.h>
+#include <stdbool.h>
 
+int front = 0;
+int rear = -1;
+int queue[100];
+
+void enqueue(int val)
+{
+	if(rear == 99)
+		printf("Overflow\n");
+		
+	rear +=1;
+	queue[rear] = val;
+}
+
+int dequeue()
+{
+	if(front>rear)
+	{
+		printf("Underflow\n");
+		return -1;
+	}
+	int val = queue[front];
+	front +=1;
+	return val;
+}
+
+bool isEmptyQueue()
+{
+	if(front>rear || front==100)
+		return true;
+	return false;
+}
+
+void breadthFirstSearch(int size,int arr[][size])
+{
+	int visited[size];                                  //will keep track of visited nodes
+	int i,j,node;
+	
+	for(i=0;i<size;i++)
+		visited[i]=0;
+	
+	enqueue(0);
+	visited[0]=1;
+	
+	while(!isEmptyQueue())                              //traversal starts here
+	{
+		node = dequeue();
+		if(node==-1)
+			break;
+		printf("%d ",node);
+		
+			for(j=0;j<size;j++)                         //loops through adjacency matrix rows
+			{
+				if(arr[node][j]==1 && visited[j]==0)
+				{
+					enqueue(j);
+					visited[j]=1;
+				}
+			}
+	}
+}
+
+void depthFirstSearch(int size, int arr[][size],int visited[size], int node)
+{
+	int i;
+	for(i = 0; i<size; i++)
+	{
+		if(arr[node][i] == 1 && visited[i]==0)
+		{
+			printf("%d ",i);
+			visited[i] = 1;
+			depthFirstSearch(size,arr,visited,i);         //recursive call to dfs
+		}
+	}
+}
+
+int main()
+{
+	int size,i,j,option=1;
+		
+	printf("Enter the number of nodes in the graph\n");
+	scanf("%d",&size);
+	int graph[size][size];
+	
+	int visited[size];
+	for(i=0;i<size;i++)
+		visited[i] = 0;
+	
+	printf("Enter the adjacency matrix\n");
+	for(i=0;i<size;i++)                                            //taking adjacency matrix as input
+	{
+		for(j=0;j<size;j++)
+		{
+			scanf("%d",&graph[i][j]);
+		}
+	}
+	
+	while(option)                                                   //menu driven program
+	{
+		printf("\nBFS : Press 1	DFS : Press 2	Exit : Press 0\n");
+		scanf("%d",&option);
+		
+		if(option==1)
+			breadthFirstSearch(size,graph);
+			
+		if(option==2)
+		{
+			printf("\n0 ");
+			visited[0] = 1;
+			depthFirstSearch(size,graph,visited,0);
+		}
+	}
+return 0;
+}
