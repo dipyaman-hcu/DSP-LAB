@@ -1,1 +1,124 @@
+#include<stdio.h>
+#include<string.h>
 
+typedef struct student
+{
+	char name[20];
+	int gatescore;
+}student;
+
+void heapify(student *a, int i, int size)
+{
+	student temp;
+	int left = i*2 + 1;
+	int right = i*2 + 2;
+	int largest = i;
+	
+	if(left < size && a[largest].gatescore<a[left].gatescore)
+	{
+		largest = left;
+	}
+
+	if(right < size && a[largest].gatescore<a[right].gatescore)
+	{
+		largest = right;
+	}
+	
+	if(i != largest)
+	{
+		temp.gatescore = a[i].gatescore; strcpy(temp.name,a[i].name);
+		a[i].gatescore = a[largest].gatescore; strcpy(a[i].name,a[largest].name);
+		a[largest].gatescore = temp.gatescore; strcpy(a[largest].name,temp.name); 
+		heapify(a,largest,size);
+	}
+	
+}
+
+
+void build_heap(student *a,int size)
+{
+	int i;
+	for(i = size/2-1; i>=0; i--)
+		heapify(a,i,size);
+}
+
+
+void heap_sort(student *a, int size)
+{
+	if(size != 0)
+	{
+		student temp;
+		temp.gatescore = a[0].gatescore; strcpy(temp.name,a[0].name);
+		a[0].gatescore = a[size-1].gatescore; strcpy(a[0].name,a[size-1].name);
+		a[size-1].gatescore = temp.gatescore; strcpy(a[size-1].name,temp.name);
+		
+		heapify(a,0,size-1);
+		heap_sort(a,size-1);
+	}
+}
+
+int main()
+{
+	int j,i,n,current = 0;
+	printf("Enter the size of the array \n");
+	scanf("%d",&n);
+	
+	student a[n];
+	
+	int flag;
+	printf("\nTo insert element PRESS 1.... To delete element PRESS 2......To display the queue PRESS 3...... To exit PRESS 0\n");
+	scanf("%d",&flag);
+	
+	while(flag)
+	{
+		if(flag == 1)
+		{
+			printf("Enter the Name and Gatescore \n");
+			scanf("%s %d",a[current].name,&a[current].gatescore);
+			
+			current += 1;
+			build_heap(a,current);
+		}
+		
+		if(flag == 2)
+		{
+			student temp;
+			temp = a[0];
+			a[0] = a[current - 1];
+			a[current-1] = temp;
+			
+			printf("%s %d",temp.name,temp.gatescore);
+			
+			current = current - 1;
+			build_heap(a,current);
+		}
+		if(flag == 3)
+		{
+			build_heap(a,current);
+			student arrcpy[n];
+			
+			for(i = 0; i<current; i++)
+				arrcpy[i] = a[i];
+				
+			heap_sort(arrcpy,current);
+			
+			for(j = current-1; j>= 0; j--)
+			{
+				printf("%s %d \n",arrcpy[j].name,arrcpy[j].gatescore);
+			}
+			
+		}
+		printf("\nTo insert element PRESS 1.... To delete element PRESS 2......To display the queue PRESS 3...... To exit PRESS 0 \n");
+		scanf("%d",&flag);
+		
+	}
+	
+	build_heap(a,current);
+	heap_sort(a,current);
+	
+	printf("\n");
+	for(i = current-1; i>= 0; i--)
+		printf("%s %d ",a[i].name,a[i].gatescore);
+		
+return 0;
+}
