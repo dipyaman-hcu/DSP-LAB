@@ -1,1 +1,121 @@
+#include<stdio.h>
+#include<stdlib.h>
 
+struct node {
+	int data;
+	struct node *next;
+};
+
+struct node *front = NULL;
+struct node *tail = NULL;
+
+struct node* enqueue(struct node *ptr)
+{
+	struct node *new_node; int x;
+	
+	printf("Enter the value to be enqueued \n");
+	scanf("%d",&x);
+	
+	new_node = (struct node*)(malloc(sizeof(struct node)));
+	new_node->data = x;
+	new_node->next = NULL;
+	
+	if(tail == NULL)
+	{
+		tail = new_node;
+		front = new_node;
+		return tail;
+	}
+	else
+	{
+		tail->next = new_node;
+		tail = new_node;
+		return ptr;
+	}
+}
+
+int dequeue(struct node* ptr)
+{
+	int x;
+	struct node *temp;
+	
+	if(front == NULL)
+	{
+		printf("The queue is empty \n");
+	}
+	else
+	{
+		x = front->data;
+		temp = front;
+		front = front->next;
+		free(temp);
+		return x;
+	}
+	
+}
+
+
+void display(struct node* ptr)
+{
+	struct node* temp;
+	temp = front;
+	if(front == NULL)
+	{
+		printf("The queue is empty \n");
+	}
+	else
+	{
+		while(temp != tail->next)
+		{
+			printf("%d -> ",temp->data);
+			temp = temp->next;
+		}
+	}
+	printf("NULL \n");
+}
+
+
+int main()
+{
+	
+	int c = 1,x;
+	struct node *head;
+	printf("The options are as follows \n");
+	printf("ENQUEUE  PRESS 1 \n");
+	printf("DEQUEUE  PRESS 2 \n");
+	printf("DISPLAY  PRESS 3 \n");
+	printf("EXIT  PRESS 0 \n");
+	
+	head = NULL;
+	
+	while(c)
+	{
+		printf("Enter your choice : \n");
+		scanf("%d",&c);
+		
+		if(c == 1)
+		{
+			printf("performing enqueue \n");
+			head = enqueue(head);
+		}
+
+		if(c == 2)
+		{
+			printf("Performing dequeue \n");
+			x = dequeue(head);
+			printf(" The value received on dequeue is %d \n",x);
+		}
+		if(c == 3)
+		{
+			printf("The queue is : \n");
+			display(head);
+		}
+		
+		
+		
+	}
+	printf("The final queue is : \n");
+	display(head);
+	
+	return 0;
+}
