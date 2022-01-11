@@ -1,1 +1,141 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define REMOVED -2000000
+#define EMPTY 2000000
 
+//function to insert elements
+void insert(int h[],int key,int hashsize)
+{
+	int i,index,flag=0;
+	int hash_key = key%hashsize;
+	
+	for(i = 0; i<hashsize; i++)
+	{
+		index = (hash_key + i*i)%hashsize;
+		
+		if(h[index] == EMPTY || h[index] == REMOVED)
+		{
+		
+			h[index] = key;
+			flag = 1;
+			break;
+		}
+	}
+	if(flag == 0)
+		printf("The number could not be inserted\n");
+}
+
+
+//function to search elements
+int search(int h[],int key,int hashsize)
+{
+	
+	int i,index;
+	int hash_key = key%hashsize;
+	
+	for(i = 0; i<hashsize; i++)
+	{
+		index = (hash_key + i*i)%hashsize;
+		
+		if(h[index] == key)
+		{
+			printf("Key found at index %d\n",index);
+			return index;
+		}
+		if(h[index] == EMPTY)
+		{
+			printf("Key is not present\n");
+			return 0;
+		}
+	}
+}
+
+
+
+//function to delete elements
+void delete(int h[],int key,int hashsize)
+{
+	int index = search(h,key,hashsize);
+	if(index != 0)
+	{
+		h[index] = REMOVED;
+		printf("Key deleted from index %d",index);
+	}
+}
+
+
+//function to display the hashtable
+void display(int h[],int hashsize)
+{
+	int i ;
+	for(i = 0; i<hashsize; i++)
+	{
+		if(h[i] == EMPTY || h[i] == REMOVED )
+			printf("EMPTY ");
+		else
+			printf("%d ",h[i]);
+	}
+	printf("\n");
+}
+
+
+//main driver function
+int main()
+{
+	int n,i,flag,z=0,lf;
+	int key;
+	printf("Enter the size of the hash table\n");
+	scanf("%d",&n);
+	int hash[n];
+	
+	for(i = 0; i<n; i++)
+		hash[i] = EMPTY;	
+		
+	printf("\nTo Insert : Press 1	To Search : Press 2	To Delete : Press 3	Loadfactor : Press 4	Display : Press 5	Exit : Press 0\n");
+	z = scanf("%d",&flag);
+	if(z == 0)
+	{
+		printf("Enter valid input\n");
+		return 0;
+	}
+	while(flag)
+	{
+		if(flag == 1)
+		{
+			printf("Enter the key you want to insert\n");
+			scanf("%d",&key);
+			insert(hash,key,n);
+		}
+		if(flag == 2)
+		{
+			printf("Enter the key you want to search\n");
+			scanf("%d",&key);
+			search(hash,key,n);
+		}
+		if(flag == 3)
+		{
+			printf("Enter the key you want to delete\n");
+			scanf("%d",&key);
+			delete(hash,key,n);
+		}
+		if(flag == 4)
+		{
+			lf = n*0.75;
+			printf("Loadfactor is %d\n",lf);
+		}
+		if(flag == 5)
+		{
+			printf("The hashtable is : ");
+			display(hash,n);
+		}
+		
+		printf("\nTo Insert : Press 1	To Search : Press 2	To Delete : Press 3	Loadfactor : Press 4	Display : Press 5	Exit : Press 0\n");
+		z = scanf("%d",&flag);
+		if(z == 0)
+		{
+			printf("Enter valid input\n");
+			return 0;
+		}
+	}
+
+}
