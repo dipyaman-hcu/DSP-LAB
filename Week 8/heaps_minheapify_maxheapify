@@ -1,1 +1,231 @@
+#include<stdio.h>
+#define S 100
 
+int choice;
+
+void swap(int *a, int *b)
+{
+	int temp;
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+
+//insert function
+void insert(int *a, int size,int val)
+{
+	int i = size-1;
+	int parent;
+	a[i] = val;
+	
+	if(i % 2 == 0)
+	{
+		parent = (i-2)/2;
+	}
+	else
+	{
+		parent = (i-1)/2;
+	}
+
+	
+	if(choice == 1)
+	{
+		while(a[parent] > a[i] && i != 0)
+		{
+			swap(&a[parent],&a[i]);
+			i = parent;
+			if(i % 2 == 0)
+			{
+				parent = (i-2)/2;
+			}
+			else
+			{
+				parent = (i-1)/2;
+			}	
+		}
+	}
+	if(choice == 0)
+	{
+		while(a[parent] < a[i] && i != 0)
+		{
+			swap(&a[parent],&a[i]);
+			i = parent;
+			if(i % 2 == 0)
+			{
+				parent = (i-2)/2;
+			}
+			else
+			{
+				parent = (i-1)/2;
+			}
+		}
+	}	
+}
+
+
+//heapify is used to create a heap from a particular node.
+void heapify(int *a, int i, int size)
+{
+	int temp;
+	int left = i*2 + 1;
+	int right = i*2 + 2;
+	int largest = i;
+	int smallest = i;
+	
+	if(choice == 0)
+	{
+		if(left < size && a[largest]<a[left])
+		{
+			largest = left;
+		}
+	
+		if(right < size && a[largest]<a[right])
+		{
+			largest = right;
+		}
+		
+		if(i != largest)
+		{
+			temp = a[i]; a[i] = a[largest]; a[largest] = temp;
+			heapify(a,largest,size);
+		}
+	}
+	
+	if(choice == 1)
+	{
+		if(left < size && a[smallest]>a[left])
+		{
+			smallest = left;
+		}
+	
+		if(right < size && a[smallest]>a[right])
+		{
+			smallest = right;
+		}
+		
+		if(i != smallest)
+		{
+			temp = a[i]; a[i] = a[smallest]; a[smallest] = temp;
+			heapify(a,smallest,size);
+		}
+	}
+	
+}
+
+//delete function. it calls heapify once to correct the heap property after deletion
+int delete(int *a,int n)
+{
+	int x = a[0];
+	a[0] = a[n-1];
+	heapify(a,0,n-1);
+	return x;
+}
+
+
+//builds heap by calling heapify on non-leaf nodes.
+void build_heap(int *a,int size)
+{
+	int i;
+	for(i = size/2-1; i>=0; i--)
+		heapify(a,i,size);
+}
+
+
+//recursive sorting function.
+void heap_sort(int *a, int size)
+{
+	if(size != 0)
+	{
+		int temp;
+		temp = a[0];
+		a[0] = a[size-1];
+		a[size-1] = temp;
+		
+		heapify(a,0,size-1);
+		heap_sort(a,size-1);
+	}
+}
+
+
+//main driver function.
+int main()
+{
+	int i,n,val,k;
+	int a[S];
+	int dummy[S];
+	
+	printf("For Max Heap : PRESS 0, For Min Heap : PRESS 1\n");
+	scanf("%d",&choice);
+	if(choice != 0 && choice != 1)
+	{
+		printf("Choice should be either 0 or 1\n");
+		return 0;
+	}
+	if(choice == 1)
+		printf("\nIT WILL BE A MIN HEAP\n");
+		
+	if(choice == 0)
+		printf("\nIT WILL BE A MAX HEAP\n");
+	
+	printf("Enter the size of the array of inputs \n");
+	scanf("%d",&n);
+	
+	printf("Enter the elements\n");
+	for(i = 0; i<n; i++)
+	{
+		scanf("%d",&a[i]);
+	}
+	
+	int flag;
+	printf("\nBUILD HEAP : PRESS 1		INSERT : PRESS 2		DELETE : PRESS 3		SORT : PRESS 4		DISPLAY : PRESS 5		EXIT : PRESS 0\n");
+	scanf("%d",&flag);
+	
+	while(flag)
+	{
+		if(flag == 1)
+			build_heap(a,n);
+		if(flag == 2)
+		{
+			if(n == 100)
+			{
+				printf("The heap is full\n");
+				break;
+			}
+			printf("Enter the value you want to insert\n");
+			scanf("%d",&val);
+			n = n + 1;
+			insert(a,n,val);	
+		}
+		if(flag == 3)
+		{
+			val = delete(a,n);
+			printf("Node %d has been deleted\n",val);
+			n = n-1;	
+		}
+		if(flag == 4)
+		{
+			for(i = 0; i<n; i++)
+				dummy[i] = a[i];
+				
+			build_heap(dummy,n);                                        //the heapsort will change the array, since it is an inplace sorting algorithm.
+			heap_sort(dummy,n);                                        // as a result a dummy array is made, sorted and displayed, to preserve the original
+			                                                           // array/heap for any further actions. 
+			printf("\nThe elements in sorted order are\n");
+			for(i = 0; i<n;i++)
+				printf("%d ",dummy[i]);
+			printf("\n");
+		}
+		if(flag == 5)
+		{
+			for(i = 0; i<n; i++)
+				printf("%d ",a[i]);
+			
+			printf("\n");
+		}
+		
+		printf("\nBUILD HEAP : PRESS 1		INSERT : PRESS 2		DELETE : PRESS 3		SORT : PRESS 4		DISPLAY : PRESS 5		EXIT : PRESS 0\n");
+		scanf("%d",&flag);
+	}
+return 0;	
+}
