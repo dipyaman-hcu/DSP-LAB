@@ -1,1 +1,28 @@
+#include<stdio.h>
 
+void hanoi(int n, int a, int b, int c)
+{
+	if(n>0)
+	{
+		hanoi(n-1,a,c,b);
+		printf("Disc moved from %d -> %d \n",a,c);
+		hanoi(n-1,b,a,c);
+	}
+}
+
+void main()
+{
+	int total_discs;
+	
+	printf("Enter the number of discs you wish to place on the first tower A \n");
+	scanf("%d",&total_discs);
+	
+	printf("There are three towers - A , B , C \n");
+	printf("\n Tower A will be designated as 1 \n");
+	printf("Tower B will be designated as 2 \n");
+	printf("Tower C will be designated as 3 \n");
+	
+	
+	printf("\n");
+	hanoi(total_discs, 1, 2, 3);
+}
