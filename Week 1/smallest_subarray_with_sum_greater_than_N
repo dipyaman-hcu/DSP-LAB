@@ -1,1 +1,57 @@
+#include<stdio.h>
 
+int first;
+int last;
+
+int minlength(int *a,int size, int x)
+{
+	int min=size+1,sum = 0,start=0,end=0;
+	
+	while(end<size)
+	{
+		while(sum<=x && end<size)
+		{
+			sum += a[end];
+			end = end+1;
+		}
+		while(sum>x && start<size)
+		{
+			if(end-start<min)
+			{
+				min = end-start;
+				first = start;
+				last = end-1;
+			}
+				
+			sum = sum - a[start];
+			start +=1;
+		}
+	}
+	return min;
+}
+
+int main()
+{
+	int i,n,res,val;
+	printf("Enter the size of the array\n");
+	scanf("%d",&n);
+	
+	int arr[n];
+	printf("\nEnter the elements of the array\n");
+	for(i = 0; i<n;i++)
+		scanf("%d",&arr[i]);
+	
+	printf("\nEnter the value\n");
+	scanf("%d",&val);
+	res = minlength(arr,n,val);
+	
+	if(res == n+1)
+		printf("Sum of all the elements of the array is less than %d\n",val);
+		
+	printf("\nThe minimum length of the array is %d\n",res);
+	
+	for(i=first;i<=last;i++)
+		printf("%d ",arr[i]+res);
+	
+return 0;
+}
