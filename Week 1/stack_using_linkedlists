@@ -1,2 +1,131 @@
+#include<stdio.h>
+#include<stdlib.h>
 
-Hello world
+struct node {
+	int data;
+	struct node *next;
+};
+
+struct node *top_ptr = NULL;
+
+struct node* push(struct node *ptr){
+	
+	int x; struct node *new_node;
+	
+	printf("Enter the value you want to push \n");
+	scanf("%d",&x);
+	new_node = (struct node*)(malloc(sizeof(struct node)));
+	new_node->data = x;
+	new_node->next = NULL;
+	
+	if(ptr == NULL){
+		
+		top_ptr = new_node;
+		return top_ptr;
+	}
+	else{
+		top_ptr->next = new_node;
+		top_ptr = new_node;
+		return ptr;
+	}
+	
+}
+
+int pop(struct node *ptr){
+	
+	int x;
+	struct node *temp;
+	
+	if(ptr == NULL){
+		x = 0;
+		printf("The list is empty, underflow \n");
+		return x;
+	}
+	if(ptr == top_ptr){
+		x = top_ptr->data;
+		ptr = NULL;
+		free(top_ptr);
+		return x;
+	}
+	
+	temp = ptr;
+	
+	while(temp->next != top_ptr){
+		temp = temp->next;
+	}
+	
+	x = top_ptr->data;
+	free(top_ptr);
+	top_ptr = temp;
+	return x;
+}
+
+void display(struct node *ptr){
+	struct node *temp;
+	temp = ptr;
+	
+	if(temp == NULL)
+	{
+
+		printf("The list is empty \n");
+	}
+	if(ptr == top_ptr)
+	{
+		printf("%d \n",ptr->data);
+	}
+	else
+	{
+		while(temp != top_ptr->next)
+		{
+		printf("%d -> ",temp->data);
+		temp = temp->next;
+		}
+	}
+	printf("NULL \n");
+}
+
+int main()
+{
+	
+	int c = 1,x;
+	struct node *head;
+	printf("The options are as follows \n");
+	printf("Push  PRESS 1 \n");
+	printf("Pop  PRESS 2 \n");
+	printf("Display  PRESS 3 \n");
+	printf("EXIT  PRESS 0 \n");
+	
+	head = NULL;
+	top_ptr = NULL;
+	
+	while(c)
+	{
+		printf("Enter your choice : \n");
+		scanf("%d",&c);
+		
+		if(c == 1)
+		{
+			printf("Pushing \n");
+			head = push(head);
+		}
+
+		if(c == 2)
+		{
+			printf("Popping \n");
+			x = pop(head);
+			printf(" The value on the top of the stack is %d \n",x);
+		}
+		if(c == 3)
+		{
+			printf("The list is : \n");
+			display(head);
+		}
+		
+		
+		
+	}
+	printf("The final stack is : \n");
+	display(head);
+	
+	return 0;
+}
