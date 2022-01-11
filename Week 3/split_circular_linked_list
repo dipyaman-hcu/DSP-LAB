@@ -1,1 +1,172 @@
+#include<stdio.h>
+#include<stdlib.h>
 
+int count;
+
+typedef struct node                                            /*structure for the node is declared. typedef is used to shorten from struct node to just node*/
+{
+	int data;
+	struct node *next;
+}Node;
+
+Node *head;
+Node *tail;                                                   /*head is declared as a global node pointer variable*/
+
+
+/* This function takes in the head of a linked list and states whether the list is circular or not*/
+
+void iscircular(Node *ptr)
+{
+	Node *temp = ptr;
+	
+	while(temp!= NULL)
+	{
+		temp = temp->next;
+		
+		if(temp == ptr)
+		{
+			printf("\nIt is a circular linked list \n");
+			break;
+		}
+		if(temp == NULL)
+			printf("\nIt is not a circular list \n");
+	}
+	
+}
+
+
+
+/* this function takes a value from user and inserts it as a node into the list at the end*/
+
+void insert_end()
+{
+	Node  *temp = head, *new_node; int x;
+	
+	printf("Enter the value you want to enter \n");                   
+	scanf("%d",&x);                                           
+	new_node = (Node*)malloc(sizeof(Node));
+	new_node->data = x;
+	new_node->next = NULL;
+	
+	
+	if(head == NULL)
+	{
+		head = new_node;
+	}
+	else
+	{
+		while(temp->next != NULL)
+		{
+			temp = temp->next;
+		}
+		temp->next = new_node;
+	}
+	count += 1;
+	tail = new_node;
+
+}
+
+
+/* Displays the nodes in the list*/
+
+void display(Node *ptr)
+{
+	Node *temp = ptr->next;
+	
+	if(ptr == NULL)
+	{
+		printf("There are no nodes \n");
+	}
+	else
+	{
+		printf("%d -> ",ptr->data);
+		
+		while(temp != NULL && temp!= ptr)
+		{
+			printf(" %d -> ",temp->data);
+			temp = temp->next;
+		}
+	}
+}
+
+Node* divide(Node* ptr, int x)
+{
+	Node *temp1 = ptr, *temp2;
+	int i;
+	
+	if(ptr == NULL)
+		return NULL;
+	
+	for(i = 1; i<x; i++)
+	{
+		temp1 = temp1->next;
+	}
+	temp2 = temp1->next;
+	temp1->next = head;
+	tail->next = temp2;
+	
+	return temp2;
+}
+
+
+
+/* driver fuction*/
+
+int main()
+{
+	head = NULL;
+	int flag,first; Node *new_head = NULL;
+	
+	count = 0;
+	
+	printf("To create a node Press 1.......... To exit Press 0 \n");
+	scanf("%d",&flag);
+	
+	while(flag)
+	{
+		insert_end();
+		
+		printf("To create a node Press 1.......... To exit Press 0 \n");
+		scanf("%d",&flag);	
+	}
+	tail->next = head;
+	
+	printf("The list : ");
+	display(head);
+	
+	iscircular(head);
+	
+	if(count %2 == 0)
+	{
+		first = count/2;
+		
+		new_head = divide(head,first);
+	}
+	else
+	{
+		first = (count + 1)/2;
+		new_head = divide(head,first);
+	}
+
+    if(count == 1)
+	{
+    	printf("\nFirst half \n");
+		display(head);
+		iscircular(head);
+		
+		printf("\nSecond Half \n");
+		printf("NULL \n");
+	}
+	else
+	{
+		printf("\nFirst half : ");
+		display(head);
+		iscircular(head);
+		
+		printf("\nSecond Half : ");
+		display(new_head);
+		iscircular(new_head);		
+	}
+	
+return 0;
+}
