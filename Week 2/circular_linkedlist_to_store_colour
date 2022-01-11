@@ -1,1 +1,98 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
+struct node {
+	char color1[10];
+	char color2[10];
+	char color3[10];
+	struct node *next;
+};
+
+struct node *head;
+
+int main()
+{
+	int i, flag = 1;
+	struct node *temp, *new_node;
+	head = (struct node*)malloc(sizeof(struct node));
+	temp = head;
+	
+	for(i = 0; i<4;i++)
+	{
+		new_node = (struct node*)malloc(sizeof(struct node));
+		temp->next = new_node;
+		temp = new_node;
+	}
+	temp->next = head;
+	temp = head;
+	
+	 
+	for(i = 0; i<5;i++)                                           /* for loop to take user input*/
+	{
+		printf(" Enter First Color for node %d : ",i);              
+		scanf("%s",(*temp).color1);
+		
+		printf(" Enter Second Color for node %d : ",i);
+		scanf("%s",(*temp).color2);
+		
+		printf(" Enter Third Color for node %d : ",i);
+		scanf("%s",(*temp).color3);
+
+		temp = temp->next;
+	}
+	
+	struct node *check = temp->next;
+
+	for(i = 0; i<5;i++)                                           /* for loop to check whether the string values match properly*/
+	{
+		if(!(strcmp(temp->color1,check->color3)))
+		{
+			printf("The Third color of node %d does not match the First color of node %d ", i, (i+1)%5);
+			flag = 0;
+			break;
+		}
+		temp = temp->next;
+		check = check->next;
+	}
+	
+	temp = head;
+	
+	if(flag)
+	{
+		printf("\n");
+		
+		for(i = 0; i<5; i++)                                                               /* printing all the three strings of each node*/
+		{
+			printf("%d.	%s	%s	%s	\n",i+1, temp->color1, temp->color2, temp->color3);
+			temp = temp->next;
+		}
+		
+		printf("\n The second Colors in the linked list are : \n");
+		
+		temp = head;
+		for(i = 0; i<5; i++)
+		{
+			printf(" %s ",temp->color2);
+			temp = temp->next;
+		}
+		printf("\n");
+		
+		temp = head;
+		
+		strcpy(temp->color1, "Color");
+		
+		for(i = 0; i<4; i++)
+			temp = temp->next;
+		strcpy(temp->color1, "Color");
+			
+		temp = head;
+		for(i = 0; i<5; i++)
+		{
+			printf("%d.	%s	%s	%s	\n",i+1, temp->color1, temp->color2, temp->color3);
+			temp = temp->next;
+		}
+		printf("String not matching");
+	}
+return 0;
+}
