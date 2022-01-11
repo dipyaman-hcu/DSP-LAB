@@ -1,1 +1,342 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include <stdbool.h>
 
+int sum;
+
+typedef struct node{
+	int data;
+	struct node *leftptr;
+	struct node *rightptr;
+	int height;
+}node;
+
+
+int height(node *N)
+{
+    if (N == NULL)
+        return 0;
+    return N->height;
+}
+ 
+
+int max(int a, int b)
+{
+    return (a > b)? a : b;
+}
+ 
+
+node *rightRotate(node *y)
+{
+    node *x = y->leftptr;
+    node *T2 = x->rightptr;
+ 
+    x->rightptr = y;
+    y->leftptr = T2;
+ 
+    y->height = max(height(y->leftptr), height(y->rightptr))+1;
+    x->height = max(height(x->leftptr), height(x->rightptr))+1;
+ 
+    return x;
+}
+ 
+
+node *leftRotate(node *x)
+{
+    node *y = x->rightptr;
+    node *T2 = y->leftptr;
+ 
+    y->leftptr = x;
+    x->rightptr = T2;
+ 
+    x->height = max(height(x->leftptr), height(x->rightptr))+1;
+    y->height = max(height(y->leftptr), height(y->rightptr))+1;
+ 
+    return y;
+}
+ 
+int getBalance(node *N)
+{
+    if (N == NULL)
+        return 0;
+    return height(N->leftptr) - height(N->rightptr);
+}
+
+
+bool isleaf(node *ptr)
+{
+	if(ptr->leftptr == NULL && ptr->rightptr == NULL)
+		return true;
+	else
+		return false;
+}
+
+
+node* insert(node *root,int val)
+{
+	if(root == NULL)
+	{
+		node *newnode = (node *)malloc(sizeof(node));
+		newnode->data = val;
+		newnode->leftptr = NULL;
+		newnode->rightptr = NULL;
+		newnode->height = 1;
+		root = newnode;
+	}
+	else
+	{
+		if(val <= root->data)
+		{
+			root->leftptr = insert(root->leftptr,val);
+		}
+		if(val > root->data)
+		{
+			root->rightptr = insert(root->rightptr,val);
+		}
+		
+	 root->height = 1 + max(height(root->leftptr),
+                           height(root->rightptr));
+ 
+
+    int balance = getBalance(root);
+ 
+
+    if (balance > 1 && val < root->leftptr->data)
+        return rightRotate(root);
+ 
+
+    if (balance < -1 && val > root->rightptr->data)
+        return leftRotate(root);
+ 
+
+    if (balance > 1 && val > root->leftptr->data)
+    {
+        root->leftptr =  leftRotate(root->leftptr);
+        return rightRotate(root);
+    }
+ 
+
+    if (balance < -1 && val < root->rightptr->data)
+    {
+        root->rightptr = rightRotate(root->rightptr);
+        return leftRotate(root);
+    }
+ 
+	}
+	return(root);
+}
+
+
+
+
+/*THE INORDER SUCCESSOR IS USED WHILE DELETING A NODE*/
+
+node *inordersuccessor(node *root)
+{
+	node *temp = root;
+	while(temp != NULL && temp->leftptr != NULL)
+	{
+		temp = temp->leftptr;
+	}
+	return temp;
+}
+
+
+/*DELETE FUNCTION*/
+
+node* delete(node *root, int k)
+{
+	if(k < root->data)
+		root->leftptr = delete(root->leftptr,k);
+	else if(k > root->data)
+		root->rightptr = delete(root->rightptr,k);
+	else
+	{
+		if(root->leftptr == NULL)
+		{
+			node *temp = root->rightptr;
+			free(root);
+			return(temp);
+		}
+		else if(root->rightptr == NULL)
+		{
+			node *temp = root->leftptr;
+			free(root);
+			return(temp);
+		}
+		
+		node *temp = inordersuccessor(root->rightptr);
+		root->data = temp->data;
+		root->rightptr = delete(root->rightptr,temp->data);
+	}
+	return root;
+}
+
+/*LEVEL ORDER TRAVERSAL CODE STARTS HERE*/
+
+node* queue[100];
+int front;
+int rear;
+
+
+void push(node* x)       //required to make the queue for level order traversal
+{
+	if(rear==100)
+		printf("Overflow\n");
+	else
+	{
+		queue[rear] = x;
+		rear += 1;
+	}
+}
+
+void pop()               //required to make the queue for level order traversal
+{
+	if(front == rear)
+		printf("Underflow\n");
+	else
+	{
+		if(queue[front]->leftptr != NULL)
+			push(queue[front]->leftptr);
+		if(queue[front]->rightptr != NULL)
+			push(queue[front]->rightptr);
+			
+		printf("%d ",queue[front]->data);
+		front = front + 1;
+	}
+}
+
+bool isempty()          // required to check whether queue is empty while printing
+{
+	if(front == rear)
+		return(true);
+	return(false);
+}
+
+void levelorder(node *root)    // function for the level order
+{
+	push(root);
+	
+	
+	while(isempty() == false)
+	{
+		pop();
+	}
+		
+}
+/*LEVEL ORDER TRAVERSAL CODE ENDS HERE*/
+
+
+
+void inorder(node *root)     // inorder
+{
+	if(root == NULL)
+		return;
+	
+	inorder(root->leftptr);
+	printf("%d ",root->data);
+	inorder(root->rightptr);
+}
+
+void preorder(node *root)   //preorder
+{
+	if(root == NULL)
+		return;
+	
+	printf("%d ",root->data);
+	preorder(root->leftptr);
+	preorder(root->rightptr);
+}
+
+void postorder(node *root)   //postorder
+{
+	if(root == NULL)
+		return;
+	
+	postorder(root->leftptr);
+	postorder(root->rightptr);
+	printf("%d ",root->data);
+}
+
+void nodesum(node* root)
+{
+	if(root == NULL)
+		return;
+	sum = sum + root->data;
+	nodesum(root->leftptr);
+	nodesum(root->rightptr);
+}
+
+
+/*MAIN DRIVER FUNCTION*/
+
+int main()
+{
+	front = 0; rear = 0;
+	node *root = NULL;
+	int i = 1,val;
+	
+	while(i)
+		{
+			printf("Enter the value of node you want to insert\n");
+			scanf("%d",&val);
+			root = insert(root,val);
+			
+			printf("press 1 to insert, 0 to stop\n");
+			scanf("%d",&i);
+		}
+		
+	int flag;
+	printf("\nTO INSERT : PRESS 1     TO DELETE : PRESS 2      LEVEL-ORDER-DISPLAY : PRESS 3      INORDER : PRESS 4      PREORDER : PRESS 5       POSTORDER : PRESS 6      LEFT SUBTREE SUM : PRESS 7       EXIT : PRESS 0  \n");
+	scanf("%d",&flag);
+	
+	while(flag)
+	{
+		if(flag == 1)
+		{
+			printf("Enter the value of node you want to INSERT\n");
+			scanf("%d",&val);
+			root = insert(root,val);			
+		}
+		if(flag == 2)
+		{
+			printf("Enter the value of node you want to DELETE\n");
+			scanf("%d",&val);
+			root = delete(root,val);	
+		}
+		if(flag == 3)
+		{
+			printf("Level order display : ");
+			levelorder(root);
+			printf("\n");
+		}
+		if(flag == 4)
+		{
+			printf("Inorder display : ");
+			inorder(root);
+			printf("\n");
+		}
+		if(flag == 5)
+		{
+			printf("Preorder display : ");
+			preorder(root);
+			printf("\n");
+		}
+		if(flag == 6)
+		{
+			printf("Postorder display : ");
+			postorder(root);
+			printf("\n");
+		}
+		if(flag == 7)
+		{
+			printf("Left Subtree sum : ");
+			nodesum(root->leftptr);
+			printf("%d",sum);
+		}
+		
+	printf("\nTO INSERT : PRESS 1    TO DELETE : PRESS 2    LEVEL-ORDER-DISPLAY : PRESS 3    INORDER : PRESS 4    PREORDER : PRESS 5     POSTORDER : PRESS 6	   LEFT SUBTREE SUM : PRESS 7      EXIT : PRESS 0  \n");
+	scanf("%d",&flag);
+	}
+	return 0;
+}
