@@ -1,0 +1,82 @@
+#include<stdio.h>
+int top = -1;
+
+void push(char *arr, char c)
+{
+    top = top + 1;
+    arr[top] = c;
+}
+
+char pop(char *arr)
+{
+    char x;
+    if(top == -1)
+    {
+    	printf("\nUnderflow\n");
+    	return 0;
+	}
+	else
+	{
+		x = arr[top];
+	    top = top - 1;
+	    return x;
+	}
+}
+
+int main()
+{
+
+    int i,n;
+    char temp;
+
+    printf("Enter the size of the expression \n");
+    scanf("%d",&n);
+
+    char str[n+1], stack_arr[n+1];
+
+    printf("Enter the string \n");
+    
+    getchar();
+    gets(str);
+    
+    for(i = 0;i<n; i++){
+    	if((str[i] != '(') && (str[i] != ')') && (str[i] != '{') && (str[i] != '}') && (str[i] != '[') && (str[i] != ']'))  /*Checks whether only brackets are present in the input*/
+		{
+    		printf("The string is invalid. Please enter valid string \n");
+    		
+    		gets(str);
+		}
+	}
+
+
+    for(i = 0; i<n;i++)
+    {
+        if((str[i] == '(') || (str[i] == '{') || (str[i] == '[')){                       /*push onto a stack if there is an open bracket*/
+            push(stack_arr,str[i]);
+        }
+        else
+        {
+                temp = pop(stack_arr);
+                if(temp == 0)
+                {
+                	printf("\nFalse\n");
+                	return 0;
+				}
+                if((temp == '(' && str[i] != ')') || (temp == '[' && str[i] != ']') || (temp == '{' && str[i] != '}'))       /*Pop from the stack if there is a closing bracket*/
+                {
+                    printf("False \n");
+                    break;
+                }
+                    
+        }
+    }
+
+    if(i == n && top == -1)
+        printf("True \n");
+    else{
+        printf("False\n");
+    }
+    
+return 0;
+    
+}
