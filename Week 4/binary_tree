@@ -1,1 +1,152 @@
+#include<stdio.h>
+#include<stdlib.h>
 
+
+/*STRUCTURE FOR NODE*/
+
+typedef struct node                                                                     
+{
+struct node *lptr;
+struct node *rptr;
+int val;
+} node;
+
+
+/*RETURNS THE LARGER OF THE TWO VALUES*/
+
+int maxint(int a,int b)
+{
+	if(a>=b)
+		return a;
+	
+	return b;
+}
+
+
+node *make_node()
+{
+	node *ptr;
+	int x;
+	printf("Enter value of node (press 0 if empty) : \n");     
+	scanf("%d",&x);	                                                                      
+	if(x==0)                                                                             
+		return NULL;
+	
+	ptr=(node*)malloc(sizeof(node));
+	ptr->val=x;                                                                     
+	
+	printf("Enter left child of  %d:\n",x);
+	ptr->lptr=make_node();
+	 
+	printf("Enter right child of %d:\n",x);
+	ptr->rptr=make_node();
+	
+return ptr;
+}
+
+
+
+/*RECURSIVE FUNCTION FOR INORDER TRAVERSAL*/
+
+void inorder(node *t)
+{
+	if(t != NULL)
+		{
+			inorder(t->lptr);
+			printf("%d ",t->val);
+			inorder(t->rptr);
+		}
+}
+
+
+
+/*RECURSIVE FUNCTION FOR PREORDER TRAVERSAL*/
+
+void preorder(node *t) 
+{ 
+	if(t!=NULL)
+		{
+		printf("%d ",t->val); 
+		preorder(t->lptr); 
+		preorder(t->rptr); 
+		}
+}
+
+
+/*RECURSIVE FUNCTION FOR POSTORDER TRAVERSAL*/
+
+void postorder(node *t) 
+{ 
+	if(t!=NULL)
+		{ 
+		postorder(t->lptr); 
+		postorder(t->rptr); 
+		printf("%d ",t->val);	
+		}
+}
+
+
+
+/*RECURSIVE FUNCTION FOR FINDING HEIGHT*/
+
+
+int height(node *t)
+{
+	int lheight, rheight;
+	if(t == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		lheight = height(t->lptr);
+		rheight = height(t->rptr);
+		
+		return(maxint(lheight,rheight) + 1);
+	}
+}
+
+
+
+/*DRIVER FUNCTION*/
+
+int main()
+{
+	int i,val,temp;
+	node *root;
+	root=make_node();
+	
+	printf("\nINORDER : PRESS 1\nPREORDER : PRESS 2\nPOSTORDER : PRESS 3\nHEIGHT : PRESS 4\nEXIT : PRESS 0\n");
+	scanf("%d",&temp);
+	
+	while(temp)
+	{
+		if(temp == 1)
+		{
+			printf("\nINORDER : ");
+			inorder(root);
+		}
+		
+		if(temp == 2)
+		{
+			printf("\nPREORDER : ");
+			preorder(root);
+		}
+		
+		if(temp == 3)
+		{
+			printf("\nPOSTORDER: ");
+			postorder(root);
+		}
+		
+		if(temp == 4)
+		{
+			printf("\nHEIGHT: ");
+			printf("%d\n",height(root));
+		}
+	printf("\nINORDER : PRESS 1\nPREORDER : PRESS 2\nPOSTORDER : PRESS 3\nHEIGHT : PRESS 4\nEXIT : PRESS 0\n");
+	scanf("%d",&temp);
+	}
+	
+return 0;
+}
