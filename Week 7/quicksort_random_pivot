@@ -1,1 +1,106 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
 
+void printarray(int a[],int size)
+{
+	int i;
+	for(i = 0; i<size; i++)
+		printf("%d ",a[i]);
+		
+	printf("\n");
+}
+
+void swap(int *ptr1, int *ptr2)
+{
+	int temp = *ptr1;
+	*ptr1 = *ptr2;
+	*ptr2 = temp;
+}
+
+//random generator function
+int returnRandoms(int lower, int upper)
+{
+        int num = (rand() %(upper - lower + 1)) + lower;
+        return(num);
+}
+
+//partition function
+int partition(int *arr, int l, int r)
+{
+	int i = l-1, j,temp, pivot,randominteger;
+	
+	randominteger = returnRandoms(l,r);	
+	swap(&arr[randominteger],&arr[r]);
+	
+	pivot = arr[r];                
+	for(j = l; j<r; j++)
+	{
+		if(arr[j] < pivot)
+		{
+			i = i + 1;
+			swap(&arr[i],&arr[j]);
+		}
+	}
+	swap(&arr[i+1],&arr[r]);
+	return (i+1);
+}
+
+//recursive quicksort function
+void quicksort(int *arr,int l,int r)
+{
+	int p;
+	if(l<r){
+	p = partition(arr,l,r);
+	quicksort(arr,l,p-1);
+	quicksort(arr,p+1,r);
+	}
+}
+
+//Driver function
+int main()
+{
+	int i, n,j;
+	clock_t start1,end1,start2,end2,start3,end3;
+	
+	printf("Enter the size of the array \n");
+	scanf("%d",&n);
+	int *arr1 = (int*)malloc(n*sizeof(int));
+	int *arr2 = (int*)malloc(n*sizeof(int));
+	int *arr3 = (int*)malloc(n*sizeof(int));
+
+	for(i = 0; i<n; i++)
+	{
+		arr1[i] = rand()%10;
+		arr2[i] = i;
+	}
+	
+	int k = n/10;
+	for(j = 0; j<n-k;j++)
+		arr3[j] = j;
+	for(i = n-k;i<n;i++)
+		arr3[i] = rand()%10;	
+	
+	start1 = clock();
+	quicksort(arr1,0,n-1);
+	end1 = clock();	
+	printf("Random %0.3lf \n",(double)(end1-start1)/CLOCKS_PER_SEC);
+	
+	
+	start2 = clock();
+	quicksort(arr2,0,n-1);
+	end2 = clock();
+	printf("Sorted %0.3lf \n",(double)(end2-start2)/CLOCKS_PER_SEC);
+	
+	
+	start3 = clock();
+	quicksort(arr3,0,n-1);
+	end3 = clock();
+	printf("Almost sorted %0.3lf \n",(double)(end3-start3)/CLOCKS_PER_SEC);
+	
+	/*printarray(arr1,n);
+	printarray(arr2,n);
+	printarray(arr3,n);*/
+	
+return 0;	
+}
