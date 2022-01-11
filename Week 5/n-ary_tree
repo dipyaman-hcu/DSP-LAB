@@ -1,1 +1,264 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
 
+typedef struct frequency      // this is for the frequency node 
+{
+	int f;
+}frequency;
+
+typedef struct node {
+	char s[100];
+	struct node* ptr[50];
+	frequency* freq;
+}node;
+
+typedef struct element       // this is user defined structure to group together a word and its frequency
+{
+	char name[100];
+	int count;
+}element;
+
+element sorter[100];         // this array will be sorted later to get the frequency descending order
+
+
+void bubble(element a[], int n) // function to implement bubble sort. done to get the words in frequency descending order
+ {  
+   int i, j;
+   element temp1;  
+   for(i = 0; i < n; i++)    
+    {    
+      for(j = i+1; j < n; j++)    
+        {    
+            if(a[j].count < a[i].count)    
+            {    
+                temp1.count = a[i].count; 
+				strcpy(temp1.name,a[i].name);
+				   
+                a[i].count = a[j].count;
+				strcpy(a[i].name,a[j].name);
+				    
+                a[j].count= temp1.count;
+				strcpy(a[j].name,temp1.name);     
+            }     
+        }     
+    }
+}
+
+void printleaf(node* root,int n) //function to print leaves (except for level 4)
+{
+	int i,j;
+	printf("The Leaves are : ");
+	for(i = 0; i<n; i++)
+	{
+		for(j = 0; root->ptr[i]->ptr[j] != NULL; j++)
+		{
+			printf("%s ",root->ptr[i]->ptr[j]->s);
+		}
+	}
+	for(i = 0; i<n; i++)
+	{
+		if(root->ptr[i]->ptr[0] == NULL)
+		{
+			printf("%s ",root->ptr[i]->s);
+		}
+	}
+	printf("\n");
+}
+
+int finddeg(node* root,char str[],int n)   //function to find the degree of a node
+{
+	int count=0,i,j;
+	if(strcmp(root->s,str)==0)
+		return n;
+	else
+	{
+		for(i=0;i<n;i++)
+		{
+			if(strcmp(root->ptr[i]->s,str)==0)
+			{
+				for(j = 0; root->ptr[i]->ptr[j] != NULL; j++)
+					count +=1;
+				return(count+1);
+			}
+		}
+	}
+	count = 0;
+	for(i = 0; i<n; i++)
+	{
+		for(j=0;root->ptr[i]->ptr[j] != NULL; j++)
+		{
+			if(strcmp(root->ptr[i]->ptr[j]->s,str)==0)
+			{
+				if(root->ptr[i]->ptr[j]->freq == NULL)
+					return 1;
+				else
+					return 2;
+			}
+		}
+	}
+}
+
+int finddepth(node* root,int n,char str[]) //function to find depth of a node. depth is distance from root node, so depth of root is 0
+{
+	int i,j;
+	
+	if(strcmp(root->s,str)==0)
+		return 0;
+	for(i = 0; i<n; i++)
+	{
+		if(strcmp(root->ptr[i]->s,str)==0)
+			return 1;
+	}
+	
+	for(i = 0; i<n; i++)
+	{
+		for(j = 0;root->ptr[i]->ptr[j] != NULL;j++)
+		{
+			if(strcmp(root->ptr[i]->ptr[j]->s,str)==0)
+				return 2;
+		}
+	}
+	return -1;
+	
+}
+
+int main()
+{
+	char arr[50][100];
+	char str1[20];
+	int flag = 1; int j,i = 0,x = 0,k;
+	int indicator = 0;
+	
+	char word[20], categ[20];
+	
+	while(flag)                                    //loop used to input the categories/buckets
+	{
+		printf("Enter the Categories\n");
+		scanf("%s",arr[i]);
+		i = i+1;
+		printf("To add another Category, press 1 else press 0\n");
+		scanf("%d",&flag);
+	}
+	
+	node *root = (node*)malloc(sizeof(node));      // initializing root
+	strcpy(root->s,"Words");
+	
+	for(j = 0; j<=i; j++)                          // level 2(categories) is created in this loop
+	{
+		node *newnode = (node*)malloc(sizeof(node));
+		strcpy(newnode->s,arr[j]);
+		root->ptr[j] = newnode;
+	}
+	
+	for(j=0;j<i;j++)                               // pointer of level 2 nodes are initialized to NULL
+	{
+		for(k = 0; k<50; k++)
+				root->ptr[j]->ptr[k] = NULL;
+	}
+	
+	flag = 1;
+	while(flag)                                     // words are taken as inputs to insert into respective categories
+	{
+		printf("Enter the Words with their Categories\n");
+		scanf("%s",word);
+		scanf("%s",categ);
+		
+		for(j = 0; j<i; j++)                        //this loop goes through all pointers, checks for repititions, changes frequencies, inserts new words
+		{
+			
+			if(strcmp(categ,(root->ptr[j])->s) == 0)
+			{
+				indicator = 0;
+				while(x < 50 && root->ptr[j]->ptr[x] != NULL)
+				{
+					indicator = 0;
+					if(strcmp(word,root->ptr[j]->ptr[x]->s) == 0)
+					{
+						indicator = 1;
+						if(root->ptr[j]->ptr[x]->freq == NULL)               //frequency change happens here
+						{
+							frequency *temp = (frequency*)malloc(sizeof(frequency));
+							temp->f = 2;
+							root->ptr[j]->ptr[x]->freq = temp;
+							break;
+						}
+						else
+						{
+							root->ptr[j]->ptr[x]->freq->f += 1;              // frequency change also takes place here
+							break;
+						}
+					}
+					x += 1;		
+				}
+				
+				if( x < 50 && indicator != 1)                                // new words get their own nodes
+				{
+					node *tempnode = (node*)malloc(sizeof(node));
+					strcpy(tempnode->s,word);
+					tempnode->freq = NULL;
+					root->ptr[j]->ptr[x] = tempnode;
+				}
+				x = 0;
+			}
+
+		}
+		printf("\nCONTINUE ADDING WORDS? PRESS 1 TO CONTINUE / 0 TO STOP\n");
+		scanf("%d",&flag);	
+	}
+	
+	int index = 0;
+	element temporary;
+	
+	for(j = 0; j<i; j++)                              //this loop is required to create an array to sort the words in descending frequency
+	{
+		k = 0;
+		while(root->ptr[j]->ptr[k] != NULL)
+		{
+			strcpy(temporary.name,root->ptr[j]->ptr[k]->s);
+			if(root->ptr[j]->ptr[k]->freq == NULL)
+				temporary.count = 1;
+			else
+				temporary.count = root->ptr[j]->ptr[k]->freq->f;
+			sorter[index] = temporary;
+			index +=1;
+			k +=1;
+		}
+	}
+	
+	flag = 1;
+	
+	while(flag)                                        // loop for menu driven part
+	{
+		printf("\nPRESS 1 : DISPLAY LEAF NODES		PRESS 2 : FIND DEPTH OF A NODE 		PRESS 3 : FIND DEGREE OF A NODE	 	PRESS 4 : DISPLAY WORDS		PRESS 0 : EXIT\n");
+		scanf("%d",&flag);
+		
+		if(flag == 1)
+		{
+			printleaf(root,i);
+		}
+		if(flag == 2)
+		{
+			printf("Enter the NAME of node whose DEPTH you want to find\n");
+			scanf("%s",str1);
+			printf("\nDEPTH of %s is %d\n",str1,finddepth(root,i,str1));
+		}
+		if(flag == 3)
+		{
+			printf("Enter the NAME of node whose DEGREE you want to find\n");
+			scanf("%s",str1);
+			printf("\nDEGREE of %s is %d\n",str1,finddeg(root,str1,i));	
+		}
+		if(flag == 4)
+		{
+			bubble(sorter,index);
+			
+			for(j = index-1; j>=0; j--)
+			{
+				printf(" %s %d ",sorter[j].name,sorter[j].count);
+			}
+			printf("\n");
+		}
+	}
+return 0;
+}
